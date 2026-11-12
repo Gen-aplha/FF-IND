@@ -18,6 +18,45 @@
 @keyframes turn{to{transform:rotate(0deg)}}
 @media (orientation:portrait){#rotateNotice{display:flex}}
 @media (orientation:landscape) and (max-height:500px){.topbar{height:48px}.lobby-mid{padding:8px 4vw}.hero-copy h1{font-size:clamp(32px,6vw,54px)}.character-art{height:85%;right:18%}.lobby-bottom{padding:8px 14px}.nav button{padding:8px 11px}.gold{padding:11px 22px}.panel{max-height:94vh;padding:14px}.stick{width:100px;height:100px;bottom:12px;left:12px}.knob{left:27px;top:27px;width:42px;height:42px}.gameactions{bottom:12px;right:12px}.gamebtn{width:52px;height:52px}.gamebtn.fire{width:64px;height:64px}}
+
+/* FF IND visual upgrade */
+:root{color-scheme:dark}
+body{background:#07121c}
+#world canvas{filter:saturate(1.12) contrast(1.04)}
+#lobby{background:linear-gradient(90deg,rgba(4,10,18,.92),rgba(4,10,18,.28) 62%,rgba(4,10,18,.48)),linear-gradient(0deg,rgba(3,9,16,.92),transparent 65%)}
+.topbar{height:68px;padding:0 3.2vw;background:linear-gradient(180deg,rgba(5,12,21,.96),rgba(5,12,21,.68));border-bottom:1px solid rgba(244,190,83,.28);backdrop-filter:blur(12px)}
+.brand{font-size:27px;letter-spacing:4px;color:#ffd06a;text-shadow:0 0 18px rgba(245,167,49,.42)}
+.chip{background:rgba(17,31,47,.86);border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:9px 14px}
+.lobby-mid{padding:24px 6vw}
+.hero-copy{max-width:390px}
+.eyebrow{color:#f8c15e;letter-spacing:4px}
+.hero-copy h1{font-size:clamp(48px,8vw,88px);letter-spacing:-2px;line-height:.86;text-shadow:0 8px 30px #000}
+.hero-copy p{font-size:14px;max-width:300px;color:#d8e0e8}
+.character-art{right:17%;width:38%;height:92%;filter:drop-shadow(0 0 24px rgba(232,166,75,.13))}
+.avatar{transform:scale(1.08);filter:drop-shadow(0 18px 26px #000)}
+.avatar .torso{background:linear-gradient(90deg,#1a2735,#657184 50%,#172333)}
+.avatar .vest{background:linear-gradient(90deg,#9d7135,#e0b45e,#8d642d)}
+.lobby-bottom{padding:12px 3.2vw 22px}
+.nav{gap:10px}
+.nav button,.secondary{background:rgba(11,23,37,.82);border:1px solid rgba(255,255,255,.22);border-radius:4px;padding:12px 18px;letter-spacing:1px}
+.nav button.active{background:rgba(113,75,25,.35);border-color:#f4bd55;color:#ffd47c}
+.playbox{background:rgba(7,17,29,.88);border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:12px 14px;backdrop-filter:blur(10px)}
+.playbox b{letter-spacing:1.5px}
+.gold{border-radius:4px;background:linear-gradient(180deg,#ffe18a,#e79a25);padding:16px 38px;letter-spacing:2px;box-shadow:0 0 22px rgba(236,156,39,.25);clip-path:polygon(5% 0,100% 0,95% 100%,0 100%)}
+.panel{background:linear-gradient(145deg,rgba(13,27,43,.98),rgba(5,13,23,.98));border:1px solid rgba(255,195,91,.35);border-radius:7px}
+.panel h2{letter-spacing:3px}
+.choice{background:rgba(28,47,66,.85);border-radius:4px}
+.choice.selected{border-color:#ffd06a;background:rgba(116,78,28,.55)}
+.close{border-radius:3px}
+#gamehud .hudbox{background:rgba(4,13,23,.82);border:1px solid rgba(255,255,255,.24);border-radius:4px;backdrop-filter:blur(8px);letter-spacing:.8px}
+.centerhint{background:rgba(5,14,24,.82);border:1px solid rgba(255,199,97,.32);letter-spacing:1px}
+.stick{background:rgba(7,18,30,.36);border-color:rgba(255,255,255,.5)}
+.knob{background:rgba(238,243,247,.68)}
+.gamebtn{background:rgba(7,24,42,.84);border-color:rgba(255,255,255,.72);backdrop-filter:blur(5px)}
+.gamebtn.fire{background:rgba(178,64,39,.9);border-color:#ffca9f}
+#rotateNotice{background:radial-gradient(ellipse at 50% 35%,#203c54,#07111d 70%)}
+@media(max-width:600px){.topbar{height:54px}.brand{font-size:21px}.lobby-mid{padding:12px 5vw}.hero-copy h1{font-size:48px}.character-art{right:-3%;width:62%;height:70%}.lobby-bottom{padding:8px 12px 14px}.nav button{padding:9px 12px}}
+
 </style></head><body>
 <div id="world"></div>
 <div id="splash"><img src="./ff-ind-logo.jpg" alt="FF IND"></div><div id="rotateNotice"><div class="rotateCard"><span class="phone">▯</span><h2>ROTATE YOUR PHONE</h2><p>FF IND is designed for landscape gameplay, just like classic mobile battle royale games.</p><p class="smallnote">Turn your phone sideways to continue.</p></div></div>
@@ -37,6 +76,14 @@ const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,300);const
 scene.add(new THREE.HemisphereLight(0xdceeff,0x4d5944,2));const sun=new THREE.DirectionalLight(0xffe3b5,2.1);sun.position.set(-30,55,25);sun.castShadow=true;scene.add(sun);
 const material=c=>new THREE.MeshStandardMaterial({color:c,roughness:.88});function mesh(g,c,x,y,z){const m=new THREE.Mesh(g,material(c));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
 mesh(new THREE.CircleGeometry(105,64),0x6f945d,0,-.35,0).rotation.x=-Math.PI/2;mesh(new THREE.CircleGeometry(160,64),0x347e9d,0,-.7,0).rotation.x=-Math.PI/2;
+
+// Visual environment pass: layered terrain, beach edge, roads, rocks and clustered foliage.
+const sand=material(0xc7b27c),road=material(0x756e5c),rockMat=material(0x66736b);
+const beach=new THREE.Mesh(new THREE.RingGeometry(82,105,96),sand);beach.rotation.x=-Math.PI/2;beach.position.y=-.29;scene.add(beach);
+const roadMesh=new THREE.Mesh(new THREE.RingGeometry(29,32,96),road);roadMesh.rotation.x=-Math.PI/2;roadMesh.position.y=-.22;scene.add(roadMesh);
+for(let i=0;i<46;i++){const a=Math.random()*Math.PI*2,r=35+Math.random()*58;const rock=new THREE.Mesh(new THREE.DodecahedronGeometry(.35+Math.random()*.8,0),rockMat);rock.position.set(Math.cos(a)*r,.1,Math.sin(a)*r);rock.rotation.set(Math.random(),Math.random(),Math.random());rock.scale.y=.55;scene.add(rock)}
+for(let i=0;i<12;i++){const a=i*Math.PI/6,r=36;const x=Math.cos(a)*r,z=Math.sin(a)*r;const hut=mesh(new THREE.BoxGeometry(4,2.4,3.5),0xb6a184,x,1.2,z);const roof=mesh(new THREE.ConeGeometry(3.1,1.8,4),0x704b35,x,3.25,z);roof.rotation.y=Math.PI/4}
+
 function building(x,z,w,h,d,c){mesh(new THREE.BoxGeometry(w,h,d),c,x,h/2,z);for(let y=1.2;y<h;y+=1.8){for(let xx=-w/2+.6;xx<w/2-.3;xx+=1.2){const win=mesh(new THREE.BoxGeometry(.42,.55,.035),0x83b6bd,x+xx,y,z-d/2-.025);win.material.emissive=new THREE.Color(0x162d38)}}}
 for(let i=0;i<32;i++){let a=Math.random()*6.28,r=18+Math.random()*72,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.abs(x)<12&&Math.abs(z)<12)continue;building(x,z,3+Math.random()*4,3+Math.random()*10,3+Math.random()*4,[0xb8a88d,0xc7bba5,0x9baca5,0xb68b68][i%4])}
 function tree(x,z){mesh(new THREE.CylinderGeometry(.18,.25,2,7),0x72503a,x,1,z);mesh(new THREE.ConeGeometry(1.25,2.7,7),0x286a43,x,3,z)}
