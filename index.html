@@ -2,19 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101522">
 <title>FF IND</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;background:#000;overflow:hidden}
-#splash{position:fixed;inset:0;display:grid;place-items:center;background:#000;animation:fadeout .35s ease 1.65s forwards}
-#splash img{display:block;width:min(100vw,100vh);height:min(100vw,100vh);object-fit:contain}
-@keyframes fadeout{to{opacity:0;visibility:hidden}}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101522;color:#fff;font-family:Arial,sans-serif;touch-action:none}canvas{display:block}#splash{position:fixed;inset:0;z-index:5;background:#000;display:grid;place-items:center;animation:fade .3s ease 1.7s forwards}#splash img{width:min(100vw,100vh);height:min(100vw,100vh);object-fit:contain}@keyframes fade{to{opacity:0;visibility:hidden}}#hud{position:fixed;inset:0;pointer-events:none;z-index:2}.top{display:flex;justify-content:space-between;padding:14px;gap:8px}.pill{background:#111c;color:#fff;border:1px solid #ffffff35;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:bold}.bar{height:8px;width:140px;background:#ffffff35;border-radius:9px;margin-top:6px;overflow:hidden}.bar i{display:block;height:100%;width:100%;background:#43e58c}#hint{position:absolute;top:74px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#111b;padding:8px 12px;border-radius:10px;font-size:12px}#controls{position:fixed;inset:0;z-index:3;pointer-events:none}.stick{position:absolute;left:22px;bottom:25px;width:116px;height:116px;border-radius:50%;background:#ffffff20;border:2px solid #ffffff55;pointer-events:auto;touch-action:none}.knob{position:absolute;left:34px;top:34px;width:44px;height:44px;border-radius:50%;background:#ffffff9c;border:2px solid white}.actions{position:absolute;right:18px;bottom:26px;display:flex;flex-direction:column;gap:12px;pointer-events:auto}.act{width:66px;height:66px;border-radius:50%;border:2px solid #ffffff9c;background:#17243dcc;color:#fff;font-weight:bold;font-size:11px}.act.primary{background:#e35d36dd}.desktop{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;color:#ffffffb0;white-space:nowrap}@media(min-width:800px){.stick{width:130px;height:130px}.knob{left:39px;top:39px}.actions{right:30px;bottom:35px}}#start{position:fixed;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;background:#07101dcc;pointer-events:auto}#start .panel{width:min(88vw,390px);padding:25px;border:1px solid #ffffff35;border-radius:20px;background:#121d2bee;text-align:center;box-shadow:0 15px 60px #0008}#start h1{font-size:38px;margin:0 0 5px;letter-spacing:3px}#start p{color:#c8d1dc;font-size:14px;line-height:1.5}#play{border:0;border-radius:12px;padding:14px 28px;background:#f0a52d;color:#171717;font-weight:900;font-size:16px}
 </style>
 </head>
 <body>
-<div id="splash"><img src="./ff-ind-logo.jpg" alt="FF IND logo"></div>
-<script>setTimeout(()=>{document.getElementById('splash').remove()},2000)</script>
-</body>
-</html>
+<div id="splash"><img src="./ff-ind-logo.jpg" alt="FF IND"></div>
+<div id="hud"><div class="top"><div><div class="pill">FF IND · TRAINING ISLAND</div><div class="bar"><i id="health"></i></div></div><div class="pill" id="stats">ENERGY 100 · TOKENS 0</div></div><div id="hint">Explore the island · collect glowing tokens · avoid the storm</div></div>
+<div id="controls"><div class="stick" id="stick"><div class="knob" id="knob"></div></div><div class="actions"><button class="act primary" id="pulse">PULSE</button><button class="act" id="jump">JUMP</button></div><div class="desktop">WASD / Arrow keys to move · Space to jump · Click / P to pulse</div></div>
+<div id="start"><div class="panel"><h1>FF IND</h1><b>TRAINING ISLAND</b><p>Explore an original 3D island, collect energy tokens and practise your movement. This is an early single-player demo.</p><button id="play">ENTER ISLAND</button></div></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x8bc5d8);scene.fog=new THREE.Fog(0x8bc5d8,38,125);
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,250);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xd9efff,0x506044,2));const sun=new THREE.DirectionalLight(0xffe4b5,2.2);sun.position.set(-25,45,20);sun.castShadow=true;scene.add(sun);
+const mat=(c)=>new THREE.MeshStandardMaterial({color:c,roughness:.9});
+const ground=new THREE.Mesh(new THREE.CircleGeometry(100,64),mat(0x71965c));ground.rotation.x=-Math.PI/2;ground.position.y=-.15;ground.receiveShadow=true;scene.add(ground);
+const sea=new THREE.Mesh(new THREE.CircleGeometry(160,64),mat(0x398da9));sea.rotation.x=-Math.PI/2;sea.position.y=-.55;scene.add(sea);
+const grid=new THREE.GridHelper(100,50,0x476c45,0x78936a);grid.position.y=.01;scene.add(grid);
+function box(x,y,z,sx,sy,sz,color){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
+function tree(x,z){const t=new THREE.Mesh(new THREE.CylinderGeometry(.18,.25,2,7),mat(0x76523a));t.position.set(x,1,z);scene.add(t);const crown=new THREE.Mesh(new THREE.ConeGeometry(1.2,2.5,7),mat(0x286b46));crown.position.set(x,3,z);crown.castShadow=true;scene.add(crown)}
+for(let i=0;i<75;i++){let a=Math.random()*Math.PI*2,r=18+Math.random()*68,x=Math.cos(a)*r,z=Math.sin(a)*r;if(Math.abs(x)<13&&Math.abs(z)<13)continue;tree(x,z)}
+// Small coastal town and recognizable original landmark silhouettes
+for(let i=0;i<22;i++){let x=(Math.random()-.5)*55,z=(Math.random()-.5)*55;if(Math.abs(x)<9&&Math.abs(z)<9)continue;let h=3+Math.random()*9;box(x,h/2,z,3+Math.random()*3,h,3+Math.random()*3,[0xb8a58a,0xc7bba2,0x9aafad,0xd1a77b][i%4])}
+box(-9,2,-22,12,4,5,0xd2b78a);box(-9,4.7,-22,8,1.4,4,0x8b5d46);box(20,3,17,7,6,7,0xe0d0ae);box(20,6.5,17,2,1,2,0xb68b5a);
+const player=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.55,.9,4,8),mat(0x25364f));body.position.y=1.15;body.castShadow=true;player.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.34,12,10),mat(0xe4b68e));head.position.y=2;player.add(head);const pack=new THREE.Mesh(new THREE.BoxGeometry(.65,.75,.3),mat(0xc78b35));pack.position.set(0,1.2,-.48);player.add(pack);scene.add(player);player.position.set(0,0,0);
+const tokens=[];for(let i=0;i<18;i++){let a=Math.random()*Math.PI*2,r=12+Math.random()*55;let m=new THREE.Mesh(new THREE.IcosahedronGeometry(.48,1),new THREE.MeshStandardMaterial({color:0x42f3df,emissive:0x087b75,emissiveIntensity:1.4}));m.position.set(Math.cos(a)*r,.8,Math.sin(a)*r);scene.add(m);tokens.push(m)}
+const drones=[];for(let i=0;i<6;i++){let g=new THREE.Group();let core=new THREE.Mesh(new THREE.SphereGeometry(.65,12,10),mat(0xd76b45));g.add(core);let ring=new THREE.Mesh(new THREE.TorusGeometry(.95,.08,6,18),mat(0xffd36c));g.add(ring);g.position.set((Math.random()-.5)*70,1.6,(Math.random()-.5)*70);scene.add(g);drones.push(g)}
+let health=100,count=0,started=false,vy=0,onGround=true,pulseCooldown=0;const keys={};addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Space')jump()});addEventListener('keyup',e=>keys[e.code]=false);
+let joy={x:0,y:0};const stick=document.getElementById('stick'),knob=document.getElementById('knob');function joyMove(e){let r=stick.getBoundingClientRect(),x=e.clientX-(r.left+r.width/2),y=e.clientY-(r.top+r.height/2),d=Math.hypot(x,y),max=42;if(d>max){x=x/d*max;y=y/d*max}joy.x=x/max;joy.y=y/max;knob.style.transform='translate('+x+'px,'+y+'px)'}stick.addEventListener('pointerdown',e=>{stick.setPointerCapture(e.pointerId);joyMove(e)});stick.addEventListener('pointermove',e=>{if(e.buttons)joyMove(e)});function joyEnd(){joy={x:0,y:0};knob.style.transform=''}stick.addEventListener('pointerup',joyEnd);stick.addEventListener('pointercancel',joyEnd);
+function jump(){if(onGround&&started){vy=8;onGround=false}}document.getElementById('jump').onclick=jump;
+function pulse(){if(!started||pulseCooldown>0)return;pulseCooldown=.7;let target=null,best=13;for(const d of drones){let dist=d.position.distanceTo(player.position);if(dist<best){best=dist;target=d}}if(target){scene.remove(target);drones.splice(drones.indexOf(target),1);count+=2;document.getElementById('hint').textContent='Training drone tagged! Keep exploring.'}else document.getElementById('hint').textContent='Pulse sent · move closer to a training drone';updateHud()}document.getElementById('pulse').onclick=pulse;addEventListener('keydown',e=>{if(e.code==='KeyP')pulse()});addEventListener('pointerdown',e=>{if(e.target===renderer.domElement&&started)pulse()});
+function updateHud(){document.getElementById('health').style.width=health+'%';document.getElementById('stats').textContent='ENERGY '+health+' · TOKENS '+count}
+document.getElementById('play').onclick=()=>{started=true;document.getElementById('start').style.display='none'};
+const clock=new THREE.Clock();function loop(){requestAnimationFrame(loop);let dt=Math.min(clock.getDelta(),.04),speed=10;let forward=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)-joy.y;let side=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+joy.x;let len=Math.hypot(forward,side);if(len>1){forward/=len;side/=len}if(started){player.position.x+=side*speed*dt;player.position.z-=forward*speed*dt;player.position.x=THREE.MathUtils.clamp(player.position.x,-88,88);player.position.z=THREE.MathUtils.clamp(player.position.z,-88,88);vy-=20*dt;player.position.y+=vy*dt;if(player.position.y<=0){player.position.y=0;vy=0;onGround=true}if(len>.08)player.rotation.y=Math.atan2(side,forward);pulseCooldown=Math.max(0,pulseCooldown-dt);for(const t of tokens){t.rotation.y+=dt*1.5;t.rotation.x+=dt;if(t.visible&&t.position.distanceTo(player.position)<1.7){t.visible=false;count++;updateHud()}}for(let i=0;i<drones.length;i++){let d=drones[i];d.rotation.y+=dt;d.position.y=1.6+Math.sin(clock.elapsedTime*2+i)*.25;d.lookAt(player.position)}}
+const desired=new THREE.Vector3(player.position.x,player.position.y+6,player.position.z+11);camera.position.lerp(desired,.09);camera.lookAt(player.position.x,player.position.y+1,player.position.z);renderer.render(scene,camera)}loop();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+setTimeout(()=>document.getElementById('splash')?.remove(),2050);
+</script>
+</body></html>
