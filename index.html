@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#101522">
+  <title>FF IND — India 3D Explorer</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="game">
+    <div class="topbar">
+      <div class="brand"><span class="flag">🇮🇳</span><span>FF <b>IND</b></span></div>
+      <div class="location"><span class="dot"></span> MUMBAI • INDIA</div>
+      <button id="helpBtn" class="small-btn" aria-label="Controls">?</button>
+    </div>
+    <div id="intro" class="overlay">
+      <div class="intro-card">
+        <div class="mini-flag">🇮🇳</div>
+        <p class="eyebrow">AN INDIA 3D GAME PROJECT</p>
+        <h1>FF <span>IND</span></h1>
+        <p class="sub">Explore India. Discover its landmarks.</p>
+        <button id="startBtn" class="primary">START EXPLORING</button>
+        <p class="tiny">Prototype 01 · Mumbai Coast</p>
+      </div>
+    </div>
+    <div id="help" class="help hidden">
+      <button id="closeHelp" class="close">×</button>
+      <h2>How to explore</h2>
+      <p><b>Phone:</b> Drag the joystick to move. Use the arrows to turn the camera.</p>
+      <p><b>Computer:</b> WASD or arrow keys to move.</p>
+      <p>This first prototype is an exploration demo. More Indian regions will be added in later stages.</p>
+    </div>
+    <div class="hud">
+      <div class="mission"><span class="mission-icon">📍</span><span><b>DISCOVER MUMBAI</b><small>Find the Gateway landmark</small></span></div>
+      <div class="controls">
+        <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div>
+        <div class="camera-controls"><button id="leftBtn">◀</button><button id="rightBtn">▶</button></div>
+      </div>
+    </div>
+    <div id="toast" class="toast">Welcome to Mumbai!</div>
+    <div class="bottom-note">FF IND · EARLY PLAYABLE PROTOTYPE</div>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
